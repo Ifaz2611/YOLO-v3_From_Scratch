@@ -10,6 +10,10 @@ env/
 # Environment variables
 .env
 
+
+#Dataset
+PASCAL_VOC/
+
 # IDE files
 .vscode/
 .idea/
