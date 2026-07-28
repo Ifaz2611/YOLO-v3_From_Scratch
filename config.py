@@ -7,7 +7,8 @@ from utils import seed_everything
 
 DATASET = 'PASCAL_VOC'
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-# seed_everything(42)  # Uncomment for deterministic behavior
+
+# seed_everything(42) 
 
 NUM_WORKERS = 4
 BATCH_SIZE = 32
@@ -34,6 +35,7 @@ LABEL_DIR = DATASET + "/labels/"
 
 # Anchors rescaled to [0, 1] based on 416x416 image size.
 # Order: [Large (for 13x13), Medium (for 26x26), Small (for 52x52)]
+
 ANCHORS = [
     [(0.28, 0.22), (0.38, 0.48), (0.90, 0.78)],  # 13x13 scale
     [(0.07, 0.15), (0.15, 0.11), (0.14, 0.29)],  # 26x26 scale
@@ -65,12 +67,12 @@ train_transforms = A.Compose(
         A.Posterize(p=0.2),
         A.ToGray(p=0.1),
         A.ChannelShuffle(p=0.01),
+
         # Note: If you ever use a pretrained backbone (e.g., ResNet), switch to ImageNet stats:
-        # mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+
         A.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], max_pixel_value=255.0),
         ToTensorV2(),
     ],
-    # FIXED: Explicitly declare label_fields for Albumentations
     bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=['class_labels']),
 )
 

@@ -9,6 +9,7 @@ List is structured by "B" indicating a residual block followed by the number of 
 "S" is for scale prediction block and computing the yolo loss
 "U" is for upsampling the feature map and concatenating with a previous layer
 """
+
 config = [
     (32, 3, 1),
     (64, 3, 2),
