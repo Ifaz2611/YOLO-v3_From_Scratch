@@ -26,7 +26,6 @@ Edit the config.py file to match the setup you want to use. Then run train.py
 | Model                   | mAP @ 50 IoU |
 | ----------------------- |:-----------------:|
 | YOLOv3 (Pascal VOC) 	  | 78.2              |
-| YOLOv3 (MS-COCO)        | Will probably train on this at some point      |
 
 The model was evaluated with confidence 0.2 and IOU threshold 0.45 using NMS.
 
