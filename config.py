@@ -54,8 +54,8 @@ train_transforms = A.Compose(
         A.ColorJitter(brightness=0.6, contrast=0.6, saturation=0.6, hue=0.6, p=0.6),
         A.OneOf(
             [
-                A.ShiftScaleRotate(rotate_limit=20, p=0.5, border_mode=cv2.BORDER_CONSTANT),
-                A.Affine(shear=15, p=0.5, mode=cv2.BORDER_CONSTANT),  # FIXED: Replaced IAAAffine
+                A.Affine(rotate=(-20, 20),border_mode=cv2.BORDER_CONSTANT, p=0.5),
+                A.Affine(shear=(-15, 15), border_mode=cv2.BORDER_CONSTANT, p=0.5),  # FIXED: Replaced IAAAffine
             ],
             p=1.0,
         ),

@@ -1,10 +1,23 @@
+import os
+import random
+import numpy as np
+import torch
+
+# MOVED TO TOP: Define seed_everything BEFORE importing config to break the circular import
+def seed_everything(seed=42):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+# Now it is safe to import config
 import config
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import numpy as np
-import os
-import random
-import torch
 
 from collections import Counter
 from torch.utils.data import DataLoader
@@ -521,15 +534,3 @@ def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
             bboxes[i], iou_threshold=iou_thresh, threshold=thresh, box_format="midpoint",
         )
         plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes)
-
-
-
-def seed_everything(seed=42):
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
