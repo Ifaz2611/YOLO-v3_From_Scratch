@@ -4,3 +4,4 @@ matplotlib
 pandas
 tqdm
 albumentations
+opencv-python
