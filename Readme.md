@@ -254,7 +254,7 @@ The architecture is defined in `model.py`'s `config` list. To modify:
 
 ## License
 
-This project is for educational purposes.
+This project is for educational purposes. v1
 
 ## Acknowledgments
 
