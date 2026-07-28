@@ -254,7 +254,7 @@ The architecture is defined in `model.py`'s `config` list. To modify:
 
 ## License
 
-This project is for educational purposes. Please refer to the original YOLOv3 license for any commercial use.
+This project is for educational purposes.
 
 ## Acknowledgments
 
