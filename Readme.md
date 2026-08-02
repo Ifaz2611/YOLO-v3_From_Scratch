@@ -40,7 +40,7 @@ cd YOLO-v3_From_Scratch
 2. Create a virtual environment (recommended):
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+venv\Scripts\activate  #On Mac : source venv/bin/activate  
 ```
 
 3. Install dependencies:
@@ -254,7 +254,7 @@ The architecture is defined in `model.py`'s `config` list. To modify:
 
 ## License
 
-This project is for educational purposes. v1
+This project is for educational purposes
 
 ## Acknowledgments
 
