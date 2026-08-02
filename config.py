@@ -10,14 +10,21 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # seed_everything(42) 
 
-NUM_WORKERS = 4
-BATCH_SIZE = 32
+# Demo mode: trains on a small slice of the dataset with tiny batch size so it
+# finishes quickly and won't hang a laptop without a GPU. Set to False for real training.
+
+DEMO_MODE = True       # make it false for full training and make it true for demo-training
+TRAIN_SAMPLE_SIZE = 40
+TEST_SAMPLE_SIZE = 10
+
+NUM_WORKERS = 0 if DEMO_MODE else 4
+BATCH_SIZE = 4 if DEMO_MODE else 32
 IMAGE_SIZE = 416
 NUM_CLASSES = 20
 
 LEARNING_RATE = 3e-4
 WEIGHT_DECAY = 5e-4
-NUM_EPOCHS = 100
+NUM_EPOCHS = 2 if DEMO_MODE else 100
 
 CONF_THRESHOLD = 0.4
 MAP_IOU_THRESH = 0.5

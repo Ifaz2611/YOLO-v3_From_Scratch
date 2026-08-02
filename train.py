@@ -36,7 +36,15 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
             y[2].to(config.DEVICE),
         )
 
-        with torch.cuda.amp.autocast():
+        if config.DEVICE == "cuda":
+            with torch.cuda.amp.autocast():
+                out = model(x)
+                loss = (
+                    loss_fn(out[0], y0, scaled_anchors[0])
+                    + loss_fn(out[1], y1, scaled_anchors[1])
+                    + loss_fn(out[2], y2, scaled_anchors[2])
+                )
+        else:
             out = model(x)
             loss = (
                 loss_fn(out[0], y0, scaled_anchors[0])
@@ -46,9 +54,13 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
 
         losses.append(loss.item())
         optimizer.zero_grad()
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+        if config.DEVICE == "cuda":
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            loss.backward()
+            optimizer.step()
 
         # update progress bar
         mean_loss = sum(losses) / len(losses)
@@ -62,7 +74,7 @@ def main():
         model.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY
     )
     loss_fn = YoloLoss()
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.cuda.amp.GradScaler() if config.DEVICE == "cuda" else None
 
     train_loader, test_loader, train_eval_loader = get_loaders(
         train_csv_path=config.DATASET + "/train.csv", test_csv_path=config.DATASET + "/test.csv"
@@ -80,7 +92,7 @@ def main():
 
     for epoch in range(config.NUM_EPOCHS):
         train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors)
-        if epoch > 0 and epoch % 3 == 0:
+        if config.DEMO_MODE or (epoch > 0 and epoch % 3 == 0):
             check_class_accuracy(model, test_loader, threshold=config.CONF_THRESHOLD)
             pred_boxes, true_boxes = get_evaluation_bboxes(
                 test_loader,
@@ -97,6 +109,10 @@ def main():
                 num_classes=config.NUM_CLASSES,
             )
             print(f"MAP: {mapval.item()}")
+            if config.DEMO_MODE and epoch == config.NUM_EPOCHS - 1:
+                plot_couple_examples(
+                    model, test_loader, config.CONF_THRESHOLD, config.NMS_IOU_THRESH, config.ANCHORS
+                )
             model.train()
 
 

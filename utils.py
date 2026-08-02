@@ -254,12 +254,14 @@ def get_evaluation_bboxes(
     anchors,
     threshold,
     box_format="midpoint",
-    device="cuda",
+    device=None,
 ):
     model.eval()
     train_idx = 0
     all_pred_boxes = []
     all_true_boxes = []
+    if device is None:
+        device = config.DEVICE
     for batch_idx, (x, labels) in enumerate(tqdm(loader)):
         x = x.to(device)
 
@@ -427,6 +429,10 @@ def get_loaders(train_csv_path, test_csv_path):
         label_dir=config.LABEL_DIR,
         anchors=config.ANCHORS,
     )
+    if config.DEMO_MODE:
+        train_dataset.annotations = train_dataset.annotations.head(config.TRAIN_SAMPLE_SIZE)
+        test_dataset.annotations = test_dataset.annotations.head(config.TEST_SAMPLE_SIZE)
+
     train_loader = DataLoader(
         dataset=train_dataset,
         batch_size=config.BATCH_SIZE,
@@ -466,7 +472,7 @@ def get_loaders(train_csv_path, test_csv_path):
 def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
     model.eval()
     x, y = next(iter(loader))
-    x = x.to("cuda")
+    x = x.to(config.DEVICE)
     with torch.no_grad():
         out = model(x)
         bboxes = [[] for _ in range(x.shape[0])]
